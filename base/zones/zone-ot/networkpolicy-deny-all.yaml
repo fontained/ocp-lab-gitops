@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: zone-ot
+  annotations:
+    iec62443.sr: "SR 5.1 -- Network Segmentation"
+    iec62443.sl: "SL2"
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress

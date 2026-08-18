@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zone-it
+  labels:
+    zone: it
+    security-level: "SL1"
+    iec62443-zone: enterprise

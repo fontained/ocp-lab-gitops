@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zone-ot
+  labels:
+    zone: ot
+    security-level: "SL2"
+    iec62443-zone: control

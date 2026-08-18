@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- zone-ot/namespace.yaml
+- zone-ot/networkpolicy-deny-all.yaml
+- zone-ot/networkpolicy-allow-dmz.yaml
+- zone-dmz/namespace.yaml
+- zone-it/namespace.yaml
