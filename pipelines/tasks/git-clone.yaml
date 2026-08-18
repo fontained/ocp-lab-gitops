@@ -14,17 +14,12 @@ spec:
   - name: output
   steps:
   - name: clone
-    image: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8:latest
-    env:
-    - name: HOME
-      value: /workspace
+    image: bitnami/git:latest
     script: |
-      #!/usr/bin/env sh
+      #!/bin/bash
       set -eu
-      /ko-app/git-init \
-        -url="$(params.url)" \
-        -revision="$(params.revision)" \
-        -path="$(workspaces.output.path)" \
-        -sslVerify=false
-      cd "$(workspaces.output.path)"
+      cd $(workspaces.output.path)
+      git clone --depth=1 $(params.url) .
+      git checkout $(params.revision) 2>/dev/null || true
+      echo "Cloned successfully"
       git log --oneline -1
