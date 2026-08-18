@@ -5,36 +5,36 @@ metadata:
   namespace: openshift-pipelines
 spec:
   params:
-  - name: url
-    type: string
-  - name: revision
-    type: string
-    default: main
+    - name: url
+      type: string
+    - name: revision
+      type: string
+      default: main
   workspaces:
-  - name: output
+    - name: output
   steps:
-  - name: clone
-    image: bitnami/git:latest
-    env:
-    - name: HOME
-      value: /workspace
-    - name: GITHUB_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: github-token
-          key: password
-    - name: GITHUB_USER
-      valueFrom:
-        secretKeyRef:
-          name: github-token
-          key: username
-    script: |
-      #!/bin/bash
-      set -eu
-      git config --global --add safe.directory /workspace/output
-      REPO_URL=$(params.url)
-      AUTH_URL=$(echo ${REPO_URL} | sed "s|https://|https://${GITHUB_USER}:${GITHUB_TOKEN}@|")
-      cd $(workspaces.output.path)
-      git clone --depth=1 ${AUTH_URL} .
-      echo "=== Clone successful ==="
-      git log --oneline -1
+    - name: clone
+      image: bitnami/git:latest
+      env:
+        - name: HOME
+          value: /workspace
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-token
+              key: password
+        - name: GITHUB_USER
+          valueFrom:
+            secretKeyRef:
+              name: github-token
+              key: username
+      script: |
+        #!/bin/bash
+        set -eu
+        git config --global --add safe.directory /workspace/output
+        REPO_URL=$(params.url)
+        AUTH_URL=$(echo ${REPO_URL} | sed "s|https://|https://${GITHUB_USER}:${GITHUB_TOKEN}@|")
+        cd $(workspaces.output.path)
+        git clone --depth=1 ${AUTH_URL} .
+        echo "=== Clone successful ==="
+        git log --oneline -1
