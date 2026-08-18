@@ -16,6 +16,8 @@ spec:
   - name: clone
     image: bitnami/git:latest
     env:
+    - name: HOME
+      value: /workspace
     - name: GITHUB_TOKEN
       valueFrom:
         secretKeyRef:
@@ -29,12 +31,10 @@ spec:
     script: |
       #!/bin/bash
       set -eu
-      git config --global --add safe.directory $(workspaces.output.path)
       git config --global --add safe.directory /workspace/output
       REPO_URL=$(params.url)
       AUTH_URL=$(echo ${REPO_URL} | sed "s|https://|https://${GITHUB_USER}:${GITHUB_TOKEN}@|")
       cd $(workspaces.output.path)
       git clone --depth=1 ${AUTH_URL} .
-      git checkout $(params.revision) 2>/dev/null || true
       echo "=== Clone successful ==="
       git log --oneline -1
