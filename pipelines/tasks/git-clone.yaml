@@ -14,10 +14,17 @@ spec:
   - name: output
   steps:
   - name: clone
-    image: alpine/git:latest
+    image: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8:latest
+    env:
+    - name: HOME
+      value: /workspace
     script: |
-      git clone --depth=1 --branch=$(params.revision) \
-        $(params.url) $(workspaces.output.path) || \
-      git clone --depth=1 $(params.url) $(workspaces.output.path) && \
-      cd $(workspaces.output.path) && \
-      git checkout $(params.revision)
+      #!/usr/bin/env sh
+      set -eu
+      /ko-app/git-init \
+        -url="$(params.url)" \
+        -revision="$(params.revision)" \
+        -path="$(workspaces.output.path)" \
+        -sslVerify=false
+      cd "$(workspaces.output.path)"
+      git log --oneline -1
