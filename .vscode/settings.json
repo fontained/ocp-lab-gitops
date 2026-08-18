@@ -1,0 +1,12 @@
+{
+  "yaml.validate": true,
+  "yaml.schemas": {
+    "https://json.schemastore.org/kustomization.json": ["**/kustomization.yaml"]
+  },
+  "yaml.customTags": ["!reference sequence"],
+  "files.associations": {
+    "pipelines/tasks/*.yaml": "yaml",
+    "pipelines/*.yaml": "yaml"
+  },
+  "yaml.schemaStore.enable": false
+}
