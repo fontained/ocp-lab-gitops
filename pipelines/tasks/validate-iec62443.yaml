@@ -13,19 +13,25 @@ spec:
   steps:
   - name: kustomize-build
     image: registry.k8s.io/kustomize/kustomize:v5.4.1
+    env:
+    - name: HOME
+      value: /workspace
     script: |
       set -e
       echo "=== kustomize build ==="
       kustomize build $(workspaces.source.path)/$(params.overlay-path) \
-        > /tmp/rendered.yaml
+        > $(workspaces.source.path)/rendered.yaml
       echo "PASS -- kustomize build succeeded"
-      cat /tmp/rendered.yaml | head -20
+      wc -l $(workspaces.source.path)/rendered.yaml
   - name: conftest-iec62443
     image: openpolicyagent/conftest:latest
+    env:
+    - name: HOME
+      value: /workspace
     script: |
       set -e
       echo "=== conftest IEC 62443 policy ==="
       conftest test \
         --policy $(workspaces.source.path)/pipelines/policies \
-        /tmp/rendered.yaml
+        $(workspaces.source.path)/rendered.yaml
       echo "PASS -- all IEC 62443 policies satisfied"
