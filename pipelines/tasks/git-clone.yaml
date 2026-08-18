@@ -12,14 +12,30 @@ spec:
     default: main
   workspaces:
   - name: output
+  - name: git-credentials
+    optional: true
   steps:
   - name: clone
     image: bitnami/git:latest
+    env:
+    - name: GITHUB_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: github-token
+          key: password
+    - name: GITHUB_USER
+      valueFrom:
+        secretKeyRef:
+          name: github-token
+          key: username
     script: |
       #!/bin/bash
       set -eu
+      # Inject credentials into URL
+      REPO_URL=$(params.url)
+      AUTH_URL=$(echo ${REPO_URL} | sed "s|https://|https://${GITHUB_USER}:${GITHUB_TOKEN}@|")
       cd $(workspaces.output.path)
-      git clone --depth=1 $(params.url) .
+      git clone --depth=1 ${AUTH_URL} .
       git checkout $(params.revision) 2>/dev/null || true
-      echo "Cloned successfully"
+      echo "=== Clone successful ==="
       git log --oneline -1
