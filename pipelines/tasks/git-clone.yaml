@@ -12,8 +12,6 @@ spec:
     default: main
   workspaces:
   - name: output
-  - name: git-credentials
-    optional: true
   steps:
   - name: clone
     image: bitnami/git:latest
@@ -31,7 +29,8 @@ spec:
     script: |
       #!/bin/bash
       set -eu
-      # Inject credentials into URL
+      git config --global --add safe.directory $(workspaces.output.path)
+      git config --global --add safe.directory /workspace/output
       REPO_URL=$(params.url)
       AUTH_URL=$(echo ${REPO_URL} | sed "s|https://|https://${GITHUB_USER}:${GITHUB_TOKEN}@|")
       cd $(workspaces.output.path)
