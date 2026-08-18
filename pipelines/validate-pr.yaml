@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: validate-gitops-pr
+  namespace: openshift-pipelines
+spec:
+  params:
+  - name: repo-url
+    type: string
+  - name: revision
+    type: string
+    default: main
+  workspaces:
+  - name: source
+  tasks:
+  - name: git-clone
+    taskRef:
+      name: git-clone
+      kind: Task
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: revision
+      value: $(params.revision)
+    workspaces:
+    - name: output
+      workspace: source
+  - name: validate-iec62443
+    runAfter: [git-clone]
+    taskRef:
+      name: validate-iec62443
+      kind: Task
+    params:
+    - name: overlay-path
+      value: overlays/lab
+    workspaces:
+    - name: source
+      workspace: source

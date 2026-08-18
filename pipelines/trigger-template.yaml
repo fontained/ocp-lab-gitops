@@ -1,0 +1,31 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: github-pr-template
+  namespace: openshift-pipelines
+spec:
+  params:
+  - name: repo-url
+  - name: revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: validate-pr-
+      namespace: openshift-pipelines
+    spec:
+      pipelineRef:
+        name: validate-gitops-pr
+      params:
+      - name: repo-url
+        value: $(tt.params.repo-url)
+      - name: revision
+        value: $(tt.params.revision)
+      workspaces:
+      - name: source
+        volumeClaimTemplate:
+          spec:
+            accessModes: [ReadWriteOnce]
+            resources:
+              requests:
+                storage: 1Gi

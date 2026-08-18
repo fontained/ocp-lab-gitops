@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: validate-iec62443
+  namespace: openshift-pipelines
+spec:
+  params:
+  - name: overlay-path
+    type: string
+    default: overlays/lab
+  workspaces:
+  - name: source
+  steps:
+  - name: kustomize-build
+    image: registry.k8s.io/kustomize/kustomize:v5.4.1
+    script: |
+      set -e
+      echo "=== kustomize build ==="
+      kustomize build $(workspaces.source.path)/$(params.overlay-path) \
+        > /tmp/rendered.yaml
+      echo "PASS -- kustomize build succeeded"
+      cat /tmp/rendered.yaml | head -20
+  - name: conftest-iec62443
+    image: openpolicyagent/conftest:latest
+    script: |
+      set -e
+      echo "=== conftest IEC 62443 policy ==="
+      conftest test \
+        --policy $(workspaces.source.path)/pipelines/policies \
+        /tmp/rendered.yaml
+      echo "PASS -- all IEC 62443 policies satisfied"
