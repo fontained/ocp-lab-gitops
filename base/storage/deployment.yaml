@@ -26,8 +26,6 @@ spec:
         - start
         - --config
         - /etc/config/config.json
-        - --helper-pod-node-selector
-        - node-role.kubernetes.io/worker=
         volumeMounts:
         - name: config-volume
           mountPath: /etc/config/
