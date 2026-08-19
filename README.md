@@ -12,3 +12,4 @@ GitOps repository for OpenShift 4.22.8 OT/IT lab cluster.
 2. Tekton validates: yaml-lint + kustomize-build + conftest IEC 62443
 3. PR approved + merged -- ArgoCD syncs cluster automatically
 # Test webhook Tue Aug 18 11:51:02 CEST 2026
+# Test status reporting Wed Aug 19 09:10:54 CEST 2026
