@@ -13,3 +13,4 @@ GitOps repository for OpenShift 4.22.8 OT/IT lab cluster.
 3. PR approved + merged -- ArgoCD syncs cluster automatically
 # Test webhook Tue Aug 18 11:51:02 CEST 2026
 # Branch protection validée le Wed Aug 19 08:26:42 CEST 2026
+# trigger Wed Aug 19 08:35:40 CEST 2026
