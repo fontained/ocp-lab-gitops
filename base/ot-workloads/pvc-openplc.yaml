@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openplc-data
+  namespace: zone-ot
+  labels:
+    iec62443.zone: zone-ot
+    iec62443.purdue-level: "1"
+  annotations:
+    iec62443.sr: "SR 3.4 Software and Information Integrity"
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path-retain
+  resources:
+    requests:
+      storage: 2Gi
