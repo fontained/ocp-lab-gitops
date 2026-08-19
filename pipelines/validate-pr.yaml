@@ -10,6 +10,9 @@ spec:
   - name: revision
     type: string
     default: main
+  - name: sha
+    type: string
+    default: ""
   workspaces:
   - name: source
   tasks:
@@ -36,3 +39,15 @@ spec:
     workspaces:
     - name: source
       workspace: source
+  finally:
+  - name: report-status
+    taskRef:
+      name: github-set-status
+      kind: Task
+    params:
+    - name: sha
+      value: $(params.sha)
+    - name: state
+      value: $(tasks.validate-iec62443.status)
+    - name: description
+      value: "IEC 62443: $(tasks.validate-iec62443.status)"
