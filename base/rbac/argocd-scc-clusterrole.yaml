@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-scc-manager
+  annotations:
+    iec62443.rationale: "GitOps controller manages SCC as code; compensating control is the OPA policy forbidding privileged SCC, enforced by branch protection"
+    iec62443.sr: "SR 1.1 Human User Identification and Authentication"
+rules:
+- apiGroups: ["security.openshift.io"]
+  resources: ["securitycontextconstraints"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
