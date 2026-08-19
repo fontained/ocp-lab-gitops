@@ -33,8 +33,13 @@ spec:
         set -eu
         git config --global --add safe.directory /workspace/output
         REPO_URL=$(params.url)
+        REVISION=$(params.revision)
         AUTH_URL=$(echo ${REPO_URL} | sed "s|https://|https://${GITHUB_USER}:${GITHUB_TOKEN}@|")
         cd $(workspaces.output.path)
-        git clone --depth=1 ${AUTH_URL} .
+        git init -q .
+        git remote add origin ${AUTH_URL}
+        git fetch --depth=1 origin ${REVISION}
+        git checkout -q FETCH_HEAD
         echo "=== Clone successful ==="
+        echo "Requested revision: ${REVISION}"
         git log --oneline -1
