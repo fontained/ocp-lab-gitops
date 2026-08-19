@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - tasks/git-clone.yaml
 - tasks/validate-iec62443.yaml
+- tasks/github-set-status.yaml
 - validate-pr.yaml
 - trigger-binding.yaml
 - trigger-template.yaml
