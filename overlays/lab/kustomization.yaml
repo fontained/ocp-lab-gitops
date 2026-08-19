@@ -4,3 +4,4 @@ resources:
 - ../../base/zones
 - ../../base/storage
 - ../../base/ot-workloads
+- ../../base/rbac

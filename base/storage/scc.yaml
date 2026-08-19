@@ -1,6 +1,10 @@
 apiVersion: security.openshift.io/v1
 kind: SecurityContextConstraints
 metadata:
+  annotations:
+    iec62443.rationale: "hostPath + allowHostDirVolumePlugin required to provision PV on node-local NVMe; runAsUser RunAsAny required to chown volume directories. Privilege scoped to the single provisioner ServiceAccount via the users list; privileged, hostNetwork, hostPID and hostPorts all denied."
+    iec62443.sr: "SR 7.7 Least Functionality"
+    iec62443.residual-risk: "Pod with this SCC can read/write any host path on its node; mitigated by ServiceAccount scoping and OPA policy enforced at PR time"
   name: local-path-provisioner-scc
 allowPrivilegedContainer: false
 allowHostDirVolumePlugin: true
