@@ -7,6 +7,7 @@ spec:
   params:
   - name: repo-url
   - name: revision
+  - name: sha
   resourcetemplates:
   - apiVersion: tekton.dev/v1
     kind: PipelineRun
@@ -21,6 +22,8 @@ spec:
         value: $(tt.params.repo-url)
       - name: revision
         value: $(tt.params.revision)
+      - name: sha
+        value: $(tt.params.sha)
       workspaces:
       - name: source
         volumeClaimTemplate:
