@@ -4,3 +4,4 @@ resources:
 - pvc-openplc.yaml
 - pvc-mosquitto.yaml
 - pvc-influxdb.yaml
+- pvc-bad.yaml
