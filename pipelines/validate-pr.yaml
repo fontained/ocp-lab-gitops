@@ -40,14 +40,33 @@ spec:
     - name: source
       workspace: source
   finally:
-  - name: report-status
+  - name: report-success
+    when:
+    - input: "$(tasks.validate-iec62443.status)"
+      operator: in
+      values: ["Succeeded"]
     taskRef:
       name: github-set-status
       kind: Task
     params:
     - name: sha
-      value: $(params.sha)
+      value: $(params.revision)
     - name: state
-      value: $(tasks.validate-iec62443.status)
+      value: "success"
     - name: description
-      value: "IEC 62443: $(tasks.validate-iec62443.status)"
+      value: "IEC 62443 validation passed"
+  - name: report-failure
+    when:
+    - input: "$(tasks.validate-iec62443.status)"
+      operator: notin
+      values: ["Succeeded"]
+    taskRef:
+      name: github-set-status
+      kind: Task
+    params:
+    - name: sha
+      value: $(params.revision)
+    - name: state
+      value: "failure"
+    - name: description
+      value: "IEC 62443 validation failed"
