@@ -7,18 +7,18 @@ spec:
   params:
   - name: repo-full-name
     type: string
-    default: fontained/ocp-lab-gitops
+    default: "fontained/ocp-lab-gitops"
   - name: sha
     type: string
   - name: state
     type: string
-    default: success
+    default: "success"
   - name: description
     type: string
-    default: Pipeline completed
+    default: "Pipeline completed"
   steps:
   - name: set-status
-    image: curlimages/curl:latest
+    image: registry.access.redhat.com/ubi9/ubi-minimal:9.4
     env:
     - name: GITHUB_TOKEN
       valueFrom:
@@ -28,14 +28,15 @@ spec:
     script: |
       #!/bin/sh
       set -e
-      curl -s -X POST \
+      echo "repo=$(params.repo-full-name) sha=$(params.sha) state=$(params.state)"
+      echo "token length: ${#GITHUB_TOKEN}"
+      HTTP=$(curl -sS -w "%{http_code}" -o /tmp/resp.json -X POST \
         -H "Authorization: token ${GITHUB_TOKEN}" \
         -H "Content-Type: application/json" \
-        -d "{
-          \"state\": \"$(params.state)\",
-          \"description\": \"$(params.description)\",
-          \"context\": \"validate-gitops-pr\",
-          \"target_url\": \"https://github.com/$(params.repo-full-name)/actions\"
-        }" \
-        "https://api.github.com/repos/$(params.repo-full-name)/statuses/$(params.sha)"
+        -d "{\"state\":\"$(params.state)\",\"description\":\"$(params.description)\",\"context\":\"validate-gitops-pr\"}" \
+        "https://api.github.com/repos/$(params.repo-full-name)/statuses/$(params.sha)")
+      echo "HTTP $HTTP"
+      cat /tmp/resp.json
+      echo
+      [ "$HTTP" = "201" ] || exit 1
       echo "Status posted: $(params.state)"
