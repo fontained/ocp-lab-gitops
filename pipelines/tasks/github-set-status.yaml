@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: github-set-status
+  namespace: openshift-pipelines
+spec:
+  params:
+  - name: repo-full-name
+    type: string
+    default: fontained/ocp-lab-gitops
+  - name: sha
+    type: string
+  - name: state
+    type: string
+    default: success
+  - name: description
+    type: string
+    default: Pipeline completed
+  steps:
+  - name: set-status
+    image: curlimages/curl:latest
+    env:
+    - name: GITHUB_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: github-token
+          key: password
+    script: |
+      #!/bin/sh
+      set -e
+      curl -s -X POST \
+        -H "Authorization: token ${GITHUB_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"state\": \"$(params.state)\",
+          \"description\": \"$(params.description)\",
+          \"context\": \"validate-gitops-pr\",
+          \"target_url\": \"https://github.com/$(params.repo-full-name)/actions\"
+        }" \
+        "https://api.github.com/repos/$(params.repo-full-name)/statuses/$(params.sha)"
+      echo "Status posted: $(params.state)"
