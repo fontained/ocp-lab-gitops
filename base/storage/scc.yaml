@@ -30,11 +30,11 @@ fsGroup:
 supplementalGroups:
   type: RunAsAny
 volumes:
-- hostPath
 - configMap
 - emptyDir
-- secret
+- hostPath
 - persistentVolumeClaim
+- secret
 users:
 - system:serviceaccount:local-path-storage:local-path-provisioner-service-account
 groups: []
