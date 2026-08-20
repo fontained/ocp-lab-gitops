@@ -17,6 +17,16 @@ spec:
     spec:
       pipelineRef:
         name: validate-gitops-pr
+      podTemplate:
+        dnsConfig:
+          options:
+          - name: ndots
+            value: "2"
+          - name: single-request-reopen
+          - name: timeout
+            value: "1"
+          - name: attempts
+            value: "1"
       params:
       - name: repo-url
         value: $(tt.params.repo-url)
